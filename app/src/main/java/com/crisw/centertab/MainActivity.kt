@@ -2,7 +2,6 @@ package com.crisw.centertab
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         rv.adapter = RvAdapter()
-        rv.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        rv.layoutManager = SmoothLayoutManager(this, RecyclerView.HORIZONTAL, false)
         //使rv获得粘性效果
         LinearSnapHelper().attachToRecyclerView(rv)
     }
@@ -44,10 +43,11 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.mTv.setText(datas[position])
             holder.mTv.width = windowWidth
+
             holder.mTv.setOnClickListener {
                 //点击判断，目前只处理了出现一页3个情况，如有更多，可自行拓展
                 if (position != 0 && position != datas.size - 1) {
-                    val index = position - (rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    val index = position - (rv.layoutManager as SmoothLayoutManager).findFirstVisibleItemPosition()
                     when (index) {
                         0 -> {
                             rv.smoothScrollToPosition(position - 1)
@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
                             rv.smoothScrollToPosition(position + 1)
                         }
                     }
-
                 }
             }
         }
@@ -67,12 +66,8 @@ class MainActivity : AppCompatActivity() {
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-            internal var mTv: TextView
+            internal var mTv: TextView = itemView.findViewById(R.id.tv) as TextView
 
-            init {
-                mTv = itemView.findViewById(R.id.tv) as TextView
-
-            }
         }
 
     }
